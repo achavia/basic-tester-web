@@ -30,10 +30,19 @@ export default async function handler(req, res) {
 
     console.log(`Running test on: ${targetUrl}`)
 
+    // Install browser if needed (for Vercel)
+    try {
+      await chromium.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] })
+    } catch (e) {
+      console.log('Installing Playwright browser...')
+      const { execSync } = require('child_process')
+      execSync('npx playwright install chromium --with-deps', { stdio: 'inherit' })
+    }
+
     // Launch browser
-    browser = await chromium.launch({ 
+    browser = await chromium.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
     })
     const page = await browser.newPage()
     
