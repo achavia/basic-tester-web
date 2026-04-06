@@ -1,5 +1,4 @@
 import { chromium } from 'playwright'
-import { execSync } from 'child_process'
 
 export default async function handler(req, res) {
   // Set CORS headers
@@ -34,18 +33,19 @@ export default async function handler(req, res) {
 
     console.log(`Detecting form fields from: ${targetUrl}`)
 
-    // Install browser if needed (for Vercel)
-    try {
-      await chromium.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] })
-    } catch (e) {
-      console.log('Installing Playwright browser...')
-      execSync('npx playwright install chromium --with-deps', { stdio: 'inherit' })
-    }
-
-    // Launch browser
+    // Launch browser with extended args for Vercel
     browser = await chromium.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-first-run',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu'
+      ]
     })
     const page = await browser.newPage()
 
