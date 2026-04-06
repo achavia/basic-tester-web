@@ -1,9 +1,10 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npx playwright install chromium && npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD": "false"
   },
   "functions": {
     "api/**/*.js": {
