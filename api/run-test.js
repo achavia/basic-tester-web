@@ -1,4 +1,4 @@
-import { chromium } from 'playwright'
+import puppeteer from 'puppeteer'
 
 export default async function handler(req, res) {
   // Set CORS headers
@@ -30,8 +30,8 @@ export default async function handler(req, res) {
 
     console.log(`Running test on: ${targetUrl}`)
 
-    // Launch browser with extended args for Vercel
-    browser = await chromium.launch({
+    // Launch browser with Puppeteer
+    browser = await puppeteer.launch({
       headless: true,
       args: [
         '--no-sandbox',
@@ -70,8 +70,12 @@ export default async function handler(req, res) {
 
         for (const selector of loginSelectors) {
           try {
-            if (await page.$(selector)) {
-              await page.fill(selector, authentication.login)
+            const element = await page.$(selector)
+            if (element) {
+              await page.evaluate((sel, val) => {
+                const el = document.querySelector(sel)
+                if (el) el.value = val
+              }, selector, authentication.login)
               console.log(`Filled login field: ${selector}`)
               authSuccessful = true
               break
@@ -94,8 +98,12 @@ export default async function handler(req, res) {
 
         for (const selector of emailSelectors) {
           try {
-            if (await page.$(selector)) {
-              await page.fill(selector, authentication.email)
+            const element = await page.$(selector)
+            if (element) {
+              await page.evaluate((sel, val) => {
+                const el = document.querySelector(sel)
+                if (el) el.value = val
+              }, selector, authentication.email)
               console.log(`Filled email field: ${selector}`)
               authSuccessful = true
               break
@@ -118,8 +126,12 @@ export default async function handler(req, res) {
 
         for (const selector of passwordSelectors) {
           try {
-            if (await page.$(selector)) {
-              await page.fill(selector, authentication.password)
+            const element = await page.$(selector)
+            if (element) {
+              await page.evaluate((sel, val) => {
+                const el = document.querySelector(sel)
+                if (el) el.value = val
+              }, selector, authentication.password)
               console.log(`Filled password field: ${selector}`)
               authSuccessful = true
               break
