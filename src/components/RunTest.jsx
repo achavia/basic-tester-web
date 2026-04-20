@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import '../styles/components.css'
+import { generateSampleData } from '../services/utils'
 
 function RunTest({ scenario, onBack, onSaveResult }) {
   const [testData, setTestData] = useState({})
@@ -27,6 +28,10 @@ function RunTest({ scenario, onBack, onSaveResult }) {
     setLoginCreds(scenario.loginCredentials || {})
     initializeTestData()
   }, [scenario])
+
+  const handleAutoFill = () => {
+    setTestData(generateSampleData(scenario.formSchema))
+  }
 
   const handleInputChange = (fieldName, value, fieldType) => {
     if (fieldType === 'checkbox') {
@@ -173,6 +178,16 @@ function RunTest({ scenario, onBack, onSaveResult }) {
                     <div className="divider"></div>
                   </div>
                 )}
+
+                <div className="form-group auto-fill-group">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={handleAutoFill}
+                  >
+                    Auto Fill Values
+                  </button>
+                </div>
 
                 {/* Form Fields Section */}
                 {scenario.formSchema.fields.map(field => (

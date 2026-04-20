@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import '../styles/components.css'
+import { generateSampleData } from '../services/utils'
 
 function QuickTest({ schema, targetUrl, loginCredentials, hasAuth }) {
   const [testData, setTestData] = useState({})
@@ -29,6 +30,10 @@ function QuickTest({ schema, targetUrl, loginCredentials, hasAuth }) {
       ...prev,
       [fieldName]: fieldType === 'checkbox' ? !prev[fieldName] : value
     }))
+  }
+
+  const handleAutoFill = () => {
+    setTestData(generateSampleData(schema))
   }
 
   const handleRunTest = async () => {
@@ -207,6 +212,14 @@ function QuickTest({ schema, targetUrl, loginCredentials, hasAuth }) {
       </div>
 
       <div className="quick-test-actions">
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={handleAutoFill}
+          disabled={isRunning}
+        >
+          Auto Fill Values
+        </button>
         <button
           className="btn btn-success"
           onClick={handleRunTest}

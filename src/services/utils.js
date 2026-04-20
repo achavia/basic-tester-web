@@ -41,6 +41,51 @@ export function validateJSON(jsonString) {
   }
 }
 
+export function getSampleValueForField(field) {
+  const value = field.defaultValue
+  if (value !== undefined && value !== null && value !== '') {
+    return value
+  }
+
+  switch (field.type) {
+    case 'email':
+      return 'test@example.com'
+    case 'password':
+      return 'Password123!'
+    case 'tel':
+      return '123-456-7890'
+    case 'url':
+      return 'https://example.com'
+    case 'number':
+      return 123
+    case 'textarea':
+      return 'This is a sample text input for testing.'
+    case 'select':
+      return field.options?.[0] || ''
+    case 'checkbox':
+      return true
+    case 'radio':
+      return field.options?.[0] || ''
+    case 'date':
+      return new Date().toISOString().split('T')[0]
+    case 'file':
+      return null
+    default:
+      return 'Sample value'
+  }
+}
+
+export function generateSampleData(schema) {
+  const data = {}
+  if (!schema || !schema.fields) return data
+
+  schema.fields.forEach(field => {
+    data[field.name] = getSampleValueForField(field)
+  })
+
+  return data
+}
+
 export function getErrorMessage(error) {
   if (typeof error === 'string') return error
   if (error?.message) return error.message
