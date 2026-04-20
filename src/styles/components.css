@@ -776,6 +776,30 @@ form {
   cursor: not-allowed;
 }
 
+/* Auto Fill Button Styling */
+.auto-fill-group .btn {
+  background-color: #000000;
+  color: white;
+  border-color: #000000;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.auto-fill-group .btn:hover:not(:disabled) {
+  background-color: #222222;
+  border-color: #222222;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.auto-fill-group .btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .test-result {
   background-color: white;
   border-radius: var(--radius-lg);

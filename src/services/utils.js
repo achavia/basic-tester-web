@@ -41,11 +41,23 @@ export function validateJSON(jsonString) {
   }
 }
 
+function getOptionValue(option) {
+  if (option === undefined || option === null) return ''
+  if (typeof option === 'object') {
+    return option.value ?? option.label ?? ''
+  }
+  return option
+}
+
 export function getSampleValueForField(field) {
   const value = field.defaultValue
   if (value !== undefined && value !== null && value !== '') {
     return value
   }
+
+  const firstOption = Array.isArray(field.options) && field.options.length > 0
+    ? getOptionValue(field.options[0])
+    : ''
 
   switch (field.type) {
     case 'email':
@@ -61,11 +73,13 @@ export function getSampleValueForField(field) {
     case 'textarea':
       return 'This is a sample text input for testing.'
     case 'select':
-      return field.options?.[0] || ''
+      return firstOption
     case 'checkbox':
-      return true
+      return Array.isArray(field.options) && field.options.length > 0
+        ? [getOptionValue(field.options[0])]
+        : true
     case 'radio':
-      return field.options?.[0] || ''
+      return firstOption
     case 'date':
       return new Date().toISOString().split('T')[0]
     case 'file':
