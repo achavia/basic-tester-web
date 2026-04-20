@@ -155,41 +155,81 @@ function QuickTest({ schema, targetUrl, loginCredentials, hasAuth }) {
                 onChange={(e) => handleInputChange(field.name, e.target.value, 'select')}
               >
                 <option value="">Select an option...</option>
-                {(field.options || []).map((option, i) => (
-                  <option key={i} value={option}>{option}</option>
-                ))}
+                {(field.options || []).map((option, i) => {
+                  const optionValue = typeof option === 'object' ? (option.value || option.label) : option
+                  const optionLabel = typeof option === 'object' ? option.label : option
+                  return (
+                    <option key={i} value={optionValue}>{optionLabel}</option>
+                  )
+                })}
               </select>
             )}
 
             {/* Checkbox */}
             {field.type === 'checkbox' && (
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  checked={testData[field.name] || false}
-                  onChange={(e) => handleInputChange(field.name, e.target.checked, 'checkbox')}
-                />
-                <span>{field.label}</span>
-              </label>
+              <>
+                {field.options && field.options.length > 0 ? (
+                  <div className="checkbox-group">
+                    {field.options.map((option, i) => {
+                      const optionValue = typeof option === 'object' ? (option.value || option.label) : option
+                      const optionLabel = typeof option === 'object' ? option.label : option
+                      return (
+                        <label key={i} className="checkbox-label">
+                          <input
+                            type="checkbox"
+                            value={optionValue}
+                            checked={Array.isArray(testData[field.name]) ? testData[field.name].includes(optionValue) : testData[field.name] === optionValue}
+                            onChange={(e) => {
+                              const isChecked = e.target.checked
+                              if (Array.isArray(testData[field.name])) {
+                                const newValue = isChecked
+                                  ? [...testData[field.name], optionValue]
+                                  : testData[field.name].filter(v => v !== optionValue)
+                                handleInputChange(field.name, newValue, 'checkbox')
+                              } else {
+                                handleInputChange(field.name, isChecked ? [optionValue] : [], 'checkbox')
+                              }
+                            }}
+                          />
+                          <span>{optionLabel}</span>
+                        </label>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      checked={testData[field.name] || false}
+                      onChange={(e) => handleInputChange(field.name, e.target.checked, 'checkbox')}
+                    />
+                    <span>{field.label}</span>
+                  </label>
+                )}
+              </>
             )}
 
             {/* Radio */}
             {field.type === 'radio' && (
               <div className="radio-group">
-                {(field.options || []).map((option, i) => (
-                  <label key={i} className="radio-label">
-                    <input
-                      type="radio"
-                      name={field.name}
-                      value={option}
-                      checked={testData[field.name] === option}
-                      onChange={(e) => handleInputChange(field.name, e.target.value, 'radio')}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
+                {(field.options || []).map((option, i) => {
+                  const optionValue = typeof option === 'object' ? (option.value || option.label) : option
+                  const optionLabel = typeof option === 'object' ? option.label : option
+                  return (
+                    <label key={i} className="radio-label">
+                      <input
+                        type="radio"
+                        name={field.name}
+                        value={optionValue}
+                        checked={testData[field.name] === optionValue}
+                        onChange={(e) => handleInputChange(field.name, e.target.value, 'radio')}
+                      />
+                      <span>{optionLabel}</span>
+                    </label>
+                  )
+                })}
               </div>
-            )}
+            )}}
 
             {/* Date */}
             {field.type === 'date' && (
@@ -214,7 +254,7 @@ function QuickTest({ schema, targetUrl, loginCredentials, hasAuth }) {
       <div className="quick-test-actions">
         <button
           type="button"
-          className="btn btn-secondary"
+          className="btn btn-primary"
           onClick={handleAutoFill}
           disabled={isRunning}
         >

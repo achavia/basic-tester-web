@@ -75,8 +75,10 @@ export function getSampleValueForField(field) {
     case 'select':
       return firstOption
     case 'checkbox':
+      // For checkbox with options, select the first value
+      // For single checkbox, set to true
       return Array.isArray(field.options) && field.options.length > 0
-        ? [getOptionValue(field.options[0])]
+        ? firstOption
         : true
     case 'radio':
       return firstOption

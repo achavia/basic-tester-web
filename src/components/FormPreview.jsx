@@ -49,39 +49,68 @@ function FormPreview({ schema }) {
             {field.type === 'select' && (
               <select disabled defaultValue={field.defaultValue || ''}>
                 <option value="">Select an option...</option>
-                {(field.options || []).map((option, i) => (
-                  <option key={i} value={option}>{option}</option>
-                ))}
+                {(field.options || []).map((option, i) => {
+                  const optionValue = typeof option === 'object' ? (option.value || option.label) : option
+                  const optionLabel = typeof option === 'object' ? option.label : option
+                  return (
+                    <option key={i} value={optionValue}>{optionLabel}</option>
+                  )
+                })}
               </select>
             )}
 
             {/* Checkbox */}
             {field.type === 'checkbox' && (
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  disabled
-                  defaultChecked={field.defaultValue || false}
-                />
-                <span>{field.label}</span>
-              </label>
+              <>
+                {field.options && field.options.length > 0 ? (
+                  <div className="checkbox-group">
+                    {field.options.map((option, i) => {
+                      const optionValue = typeof option === 'object' ? (option.value || option.label) : option
+                      const optionLabel = typeof option === 'object' ? option.label : option
+                      return (
+                        <label key={i} className="checkbox-label">
+                          <input
+                            type="checkbox"
+                            disabled
+                            defaultChecked={field.defaultValue === optionValue}
+                          />
+                          <span>{optionLabel}</span>
+                        </label>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <label className="checkbox-label">
+                    <input
+                      type="checkbox"
+                      disabled
+                      defaultChecked={field.defaultValue || false}
+                    />
+                    <span>{field.label}</span>
+                  </label>
+                )}
+              </>
             )}
 
             {/* Radio */}
             {field.type === 'radio' && (
               <div className="radio-group">
-                {(field.options || []).map((option, i) => (
-                  <label key={i} className="radio-label">
-                    <input
-                      type="radio"
-                      name={field.name}
-                      value={option}
-                      disabled
-                      defaultChecked={field.defaultValue === option}
-                    />
-                    <span>{option}</span>
-                  </label>
-                ))}
+                {(field.options || []).map((option, i) => {
+                  const optionValue = typeof option === 'object' ? (option.value || option.label) : option
+                  const optionLabel = typeof option === 'object' ? option.label : option
+                  return (
+                    <label key={i} className="radio-label">
+                      <input
+                        type="radio"
+                        name={field.name}
+                        value={optionValue}
+                        disabled
+                        defaultChecked={field.defaultValue === optionValue}
+                      />
+                      <span>{optionLabel}</span>
+                    </label>
+                  )
+                })}
               </div>
             )}
 

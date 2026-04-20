@@ -182,7 +182,7 @@ function RunTest({ scenario, onBack, onSaveResult }) {
                 <div className="form-group auto-fill-group">
                   <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="btn btn-primary"
                     onClick={handleAutoFill}
                   >
                     Auto Fill Values
@@ -230,41 +230,81 @@ function RunTest({ scenario, onBack, onSaveResult }) {
                         className="input-field"
                       >
                         <option value="">Select an option...</option>
-                        {(field.options || []).map(option => (
-                          <option key={option} value={option}>{option}</option>
-                        ))}
+                        {(field.options || []).map((option, idx) => {
+                          const optionValue = typeof option === 'object' ? (option.value || option.label) : option
+                          const optionLabel = typeof option === 'object' ? option.label : option
+                          return (
+                            <option key={idx} value={optionValue}>{optionLabel}</option>
+                          )
+                        })}
                       </select>
                     )}
 
                     {/* Checkbox */}
                     {field.type === 'checkbox' && (
-                      <label className="checkbox-label">
-                        <input
-                          type="checkbox"
-                          checked={testData[field.name] || false}
-                          onChange={(e) => handleInputChange(field.name, e.target.checked, field.type)}
-                        />
-                        <span>{field.label}</span>
-                      </label>
+                      <>
+                        {field.options && field.options.length > 0 ? (
+                          <div className="checkbox-group">
+                            {field.options.map((option, idx) => {
+                              const optionValue = typeof option === 'object' ? (option.value || option.label) : option
+                              const optionLabel = typeof option === 'object' ? option.label : option
+                              return (
+                                <label key={idx} className="checkbox-label">
+                                  <input
+                                    type="checkbox"
+                                    value={optionValue}
+                                    checked={Array.isArray(testData[field.name]) ? testData[field.name].includes(optionValue) : testData[field.name] === optionValue}
+                                    onChange={(e) => {
+                                      const isChecked = e.target.checked
+                                      if (Array.isArray(testData[field.name])) {
+                                        const newValue = isChecked
+                                          ? [...testData[field.name], optionValue]
+                                          : testData[field.name].filter(v => v !== optionValue)
+                                        handleInputChange(field.name, newValue, 'checkbox')
+                                      } else {
+                                        handleInputChange(field.name, isChecked ? [optionValue] : [], 'checkbox')
+                                      }
+                                    }}
+                                  />
+                                  <span>{optionLabel}</span>
+                                </label>
+                              )
+                            })}
+                          </div>
+                        ) : (
+                          <label className="checkbox-label">
+                            <input
+                              type="checkbox"
+                              checked={testData[field.name] || false}
+                              onChange={(e) => handleInputChange(field.name, e.target.checked, field.type)}
+                            />
+                            <span>{field.label}</span>
+                          </label>
+                        )}
+                      </>
                     )}
 
                     {/* Radio */}
                     {field.type === 'radio' && (
                       <div className="radio-group">
-                        {(field.options || []).map(option => (
-                          <label key={option} className="radio-label">
-                            <input
-                              type="radio"
-                              name={field.name}
-                              value={option}
-                              checked={testData[field.name] === option}
-                              onChange={(e) => handleInputChange(field.name, e.target.value, field.type)}
-                            />
-                            <span>{option}</span>
-                          </label>
-                        ))}
+                        {(field.options || []).map((option, idx) => {
+                          const optionValue = typeof option === 'object' ? (option.value || option.label) : option
+                          const optionLabel = typeof option === 'object' ? option.label : option
+                          return (
+                            <label key={idx} className="radio-label">
+                              <input
+                                type="radio"
+                                name={field.name}
+                                value={optionValue}
+                                checked={testData[field.name] === optionValue}
+                                onChange={(e) => handleInputChange(field.name, e.target.value, field.type)}
+                              />
+                              <span>{optionLabel}</span>
+                            </label>
+                          )
+                        })}
                       </div>
-                    )}
+                    )}}
 
                     {/* Date */}
                     {field.type === 'date' && (
