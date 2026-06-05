@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import '../styles/components.css'
 import { generateSampleData } from '../services/utils'
+import { getApiUrl } from '../services/apiConfig'
 
 function QuickTest({ schema, targetUrl, loginCredentials, hasAuth }) {
   const [testData, setTestData] = useState({})
@@ -35,8 +36,6 @@ function QuickTest({ schema, targetUrl, loginCredentials, hasAuth }) {
   const handleAutoFill = () => {
     setTestData(generateSampleData(schema))
   }
-
-import { getApiUrl } from '../services/apiConfig'
 
   const handleRunTest = async () => {
     setError('')

@@ -3,14 +3,7 @@
  * Calls the Node.js backend that uses Playwright to analyze actual form fields
  */
 
-const getApiUrl = () => {
-  // For development
-  if (import.meta.env.DEV) {
-    return 'http://localhost:3001'
-  }
-  // For production (Vercel) - use relative path
-  return ''
-}
+import { getApiUrl } from './apiConfig'
 
 const API_URL = getApiUrl()
 

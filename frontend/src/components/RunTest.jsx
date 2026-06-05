@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import '../styles/components.css'
 import { generateSampleData } from '../services/utils'
+import { getApiUrl } from '../services/apiConfig'
 
 function RunTest({ scenario, onBack, onSaveResult }) {
   const [testData, setTestData] = useState({})
@@ -64,7 +65,7 @@ function RunTest({ scenario, onBack, onSaveResult }) {
     try {
       setIsRunning(true)
 
-      const response = await fetch('http://localhost:3001/api/run-test', {
+      const response = await fetch(`${getApiUrl()}/api/run-test`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

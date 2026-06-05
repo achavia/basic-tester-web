@@ -648,6 +648,7 @@ form {
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   margin-top: var(--spacing-lg);
+  color: black;
 }
 
 .quick-test-header {
