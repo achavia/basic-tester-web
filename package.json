@@ -9,10 +9,15 @@
     "preview": "cd frontend && npm run preview",
     "server": "cd backend && npm start",
     "start": "cd backend && npm start",
-    "dev:full": "concurrently \"npm run server\" \"npm run dev\""
+    "dev:full": "concurrently \"npm run server\" \"npm run dev\"",
+    "build:frontend": "cd frontend && npm run build",
+    "start:frontend": "cd frontend && npm start",
+    "dev:frontend": "cd frontend && npm run dev",
+    "start:backend": "cd backend && npm start"
   },
   "dependencies": {},
   "devDependencies": {
     "concurrently": "^8.2.2"
-  }
+  },
+  "postinstall": "cd frontend && npm install && cd ../backend && npm install"
 }
