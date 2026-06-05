@@ -13,4 +13,9 @@
     "node-fetch": "^3.3.2",
     "playwright": "^1.40.0"
   }
+  ,
+  "engines": {
+    "node": ">=18"
+  },
+  "postinstall": "npx playwright install --with-deps"
 }

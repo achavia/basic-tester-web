@@ -31,9 +31,10 @@ app.post('/api/detect-form', async (req, res) => {
 
     console.log(`Detecting form fields from: ${targetUrl}`)
 
-    // Launch browser
+    // Launch browser (container-friendly)
     browser = await chromium.launch({ 
-      headless: true 
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
     const page = await browser.newPage()
 
@@ -339,9 +340,10 @@ app.post('/api/run-test', async (req, res) => {
 
     console.log(`Running test on: ${targetUrl}`)
 
-    // Launch browser
+    // Launch browser (container-friendly)
     browser = await chromium.launch({ 
-      headless: true 
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox']
     })
     const page = await browser.newPage()
     
@@ -698,4 +700,24 @@ app.post('/api/run-test', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`✓ BasicTester Backend running on http://localhost:${PORT}`)
   console.log(`✓ Form detection API: POST http://localhost:${PORT}/api/detect-form`)
+})
+
+// Process signal and error handlers to aid diagnosis on platforms that send SIGTERM
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received - shutting down gracefully')
+  process.exit(0)
+})
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received - shutting down')
+  process.exit(0)
+})
+
+process.on('uncaughtException', (err) => {
+  console.error('uncaughtException:', err && err.stack ? err.stack : err)
+  process.exit(1)
+})
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('unhandledRejection at:', promise, 'reason:', reason)
 })
