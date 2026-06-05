@@ -305,7 +305,7 @@ function RunTest({ scenario, onBack, onSaveResult }) {
                           )
                         })}
                       </div>
-                    )}}
+                    )}
 
                     {/* Date */}
                     {field.type === 'date' && (
