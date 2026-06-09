@@ -343,6 +343,15 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', service: 'BasicTester Form Detector' })
 })
 
+app.get('/test-connectivity', async (req, res) => {
+  try {
+    const response = await fetch('https://oamsnetbase.teamtectonic.id/console');
+    res.send(`Status: ${response.status}`);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
 /**
  * Run test with provided data
  * POST /api/run-test
