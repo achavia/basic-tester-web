@@ -348,7 +348,12 @@ app.get('/test-connectivity', async (req, res) => {
     const response = await fetch('https://oamsnetbase.teamtectonic.id/console');
     res.send(`Status: ${response.status}`);
   } catch (err) {
-    res.status(500).send(err.message);
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      error: err.toString(),
+      cause: err.cause?.toString()
+    });
   }
 });
 
