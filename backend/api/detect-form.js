@@ -16,6 +16,20 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
+  function normalizeNavigationError(error, url) {
+    const message = error?.message || ''
+    if (message.includes('ERR_NAME_NOT_RESOLVED')) {
+      return `Unable to resolve host for URL: ${url}. Please check the URL or DNS/network access from the backend.`
+    }
+    if (message.includes('ERR_CONNECTION_REFUSED')) {
+      return `Connection refused when accessing ${url}. The site may be down or blocking requests.`
+    }
+    if (message.includes('ERR_CERT_AUTHORITY_INVALID') || message.includes('ERR_CERT_COMMON_NAME_INVALID')) {
+      return `SSL certificate issue when accessing ${url}. Try using a valid HTTPS URL or check the certificate.`
+    }
+    return message
+  }
+
   let browser
 
   try {
@@ -46,7 +60,11 @@ export default async function handler(req, res) {
       
       const loginUrl = authentication.loginUrl || targetUrl
       console.log(`Navigating to login URL: ${loginUrl}`)
-      await page.goto(loginUrl, { waitUntil: 'networkidle' })
+      try {
+        await page.goto(loginUrl, { waitUntil: 'networkidle' })
+      } catch (error) {
+        throw new Error(normalizeNavigationError(error, loginUrl))
+      }
       
       let authSuccessful = false
 
@@ -148,7 +166,11 @@ export default async function handler(req, res) {
     
     if (currentUrl !== targetUrl) {
       console.log(`Navigating to target URL: ${targetUrl}`)
-      await page.goto(targetUrl, { waitUntil: 'networkidle' })
+      try {
+        await page.goto(targetUrl, { waitUntil: 'networkidle' })
+      } catch (error) {
+        throw new Error(normalizeNavigationError(error, targetUrl))
+      }
     }
     
     // Wait for page to load and check content type
